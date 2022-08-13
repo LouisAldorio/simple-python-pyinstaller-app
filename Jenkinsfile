@@ -27,5 +27,27 @@ pipeline {
                 }
             }
         }
+        stage("Manual Approval") {
+            agent {
+                docker {
+                    image 'python:2-alpine'
+                }
+            }
+            steps {
+                input message: 'Lanjutkan ke tahap Deploy?'
+            }
+        }
+        stage("Deploy") {
+            agent {
+                docker {
+                    image 'python:2-alpine'
+                }
+            }
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+                sleep 60
+                sh './jenkins/scripts/kill.sh' 
+            }
+        }
     }
 }
